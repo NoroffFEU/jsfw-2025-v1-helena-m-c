@@ -56,7 +56,7 @@ export default function CartPage() {
                       type="button"
                       onClick={() => removeItem(item.id)}
                     >
-                      Remove
+                      Remove Item
                     </button>
                   </div>
 
@@ -115,7 +115,7 @@ export default function CartPage() {
             </Link>
 
             <p className="mt-3 text-xs text-black/50">
-              Demo checkout. No payment is processed.
+              No real payment, just a fun school project
             </p>
           </aside>
         </div>
