@@ -1,71 +1,98 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 
-const schema = z.object({
-  fullName: z.string().min(3, "Full name must be at least 3 characters"),
-  subject: z.string().min(3, "Subject must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
+type Errors = {
+  fullName?: string;
+  subject?: string;
+  email?: string;
+  message?: string;
+};
 
-type ContactValues = z.infer<typeof schema>;
+const isEmail = (value: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+};
 
 export default function ContactPage() {
-  const [sent, setSent] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<ContactValues>({
-    resolver: zodResolver(schema),
-    mode: "onBlur",
-  });
+  const [errors, setErrors] = useState<Errors>({});
+  const [submitted, setSubmitted] = useState(false);
 
-  const onSubmit = async (values: ContactValues) => {
-    setSent(false);
-    await new Promise((r) => setTimeout(r, 500));
-    console.log("Contact message:", values);
-    setSent(true);
-    reset();
+  const validate = (): Errors => {
+    const next: Errors = {};
+
+    if (fullName.trim().length < 3) {
+      next.fullName = "Full name must be at least 3 characters.";
+    }
+
+    if (subject.trim().length < 3) {
+      next.subject = "Subject must be at least 3 characters.";
+    }
+
+    if (!isEmail(email)) {
+      next.email = "Please enter a valid email address.";
+    }
+
+    if (message.trim().length < 10) {
+      next.message = "Message must be at least 10 characters.";
+    }
+
+    return next;
+  };
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(false);
+
+    const nextErrors = validate();
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSubmitted(true);
+
+    setFullName("");
+    setSubject("");
+    setEmail("");
+    setMessage("");
+
+    setErrors({});
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="max-w-3xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-semibold tracking-tight">Contact</h1>
-      <p className="mt-2 text-sm text-black/60">
-        Send a message. Fields are validated before submission.
+      <p className="mt-2 text-black/60">
+        Send us a message and we’ll get back to you.
       </p>
 
-      {sent && (
-        <div className="mt-8 max-w-xl rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-900">
-          Your message has been sent successfully.
+      {submitted && (
+        <div className="mt-6 rounded-2xl border border-black/10 bg-white p-4">
+          <p className="text-sm font-medium">Message sent</p>
+          <p className="mt-1 text-sm text-black/60">
+            Thanks for reaching out. We’ll reply as soon as possible.
+          </p>
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="mt-6 max-w-xl space-y-4 rounded-2xl border border-black/10 bg-white p-6"
-        noValidate
-      >
+      <form onSubmit={onSubmit} className="mt-8 space-y-5">
         <div>
           <label className="text-sm font-semibold" htmlFor="fullName">
-            Full name
+            Full Name
           </label>
           <input
             id="fullName"
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
-            {...register("fullName")}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            placeholder="Your full name"
           />
           {errors.fullName && (
-            <p className="mt-1 text-xs text-red-600">
-              {errors.fullName.message}
-            </p>
+            <p className="mt-2 text-sm text-red-600">{errors.fullName}</p>
           )}
         </div>
 
@@ -75,13 +102,13 @@ export default function ContactPage() {
           </label>
           <input
             id="subject"
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
-            {...register("subject")}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            placeholder="What is this about?"
           />
           {errors.subject && (
-            <p className="mt-1 text-xs text-red-600">
-              {errors.subject.message}
-            </p>
+            <p className="mt-2 text-sm text-red-600">{errors.subject}</p>
           )}
         </div>
 
@@ -91,12 +118,14 @@ export default function ContactPage() {
           </label>
           <input
             id="email"
-            type="email"
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
-            {...register("email")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            placeholder="name@example.com"
+            inputMode="email"
           />
           {errors.email && (
-            <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+            <p className="mt-2 text-sm text-red-600">{errors.email}</p>
           )}
         </div>
 
@@ -106,23 +135,21 @@ export default function ContactPage() {
           </label>
           <textarea
             id="message"
-            rows={5}
-            className="mt-2 w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
-            {...register("message")}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="mt-2 min-h-[140px] w-full resize-y rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            placeholder="Write your message..."
           />
           {errors.message && (
-            <p className="mt-1 text-xs text-red-600">
-              {errors.message.message}
-            </p>
+            <p className="mt-2 text-sm text-red-600">{errors.message}</p>
           )}
         </div>
 
         <button
-          disabled={isSubmitting}
-          className="w-full rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
           type="submit"
+          className="w-full rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-black/90 transition"
         >
-          {isSubmitting ? "Sending..." : "Send message"}
+          Send message
         </button>
       </form>
     </main>

@@ -27,18 +27,15 @@ export default function ProductGridClient({
   const priceOf = (p: Product) =>
     p.discountedPrice < p.price ? p.discountedPrice : p.price;
 
-  const filtered = useMemo(() => {
-    if (!q) return products;
+  const matches = useMemo(() => {
+    if (!q) return [];
     return products.filter((p) => p.title.toLowerCase().includes(q));
   }, [products, q]);
 
-  const suggestions = useMemo(() => {
-    if (!q) return [];
-    return filtered.slice(0, 8);
-  }, [filtered, q]);
+  const suggestions = useMemo(() => matches.slice(0, 8), [matches]);
 
-  const sorted = useMemo(() => {
-    const list = filtered.slice();
+  const gridProducts = useMemo(() => {
+    const list = products.slice();
 
     switch (sort) {
       case "az":
@@ -52,13 +49,13 @@ export default function ProductGridClient({
       case "ratingHigh":
         return list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
       default:
-        return list;
+        return list; // relevance
     }
-  }, [filtered, sort]);
+  }, [products, sort]);
 
   useEffect(() => {
-    setOpen(Boolean(q) && suggestions.length > 0);
-  }, [q, suggestions.length]);
+    setOpen(Boolean(q));
+  }, [q]);
 
   useEffect(() => {
     const onDown = (e: MouseEvent) => {
@@ -71,9 +68,7 @@ export default function ProductGridClient({
 
   return (
     <div>
-      {/* Controls */}
       <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-end">
-        {/* Search + suggestions */}
         <div ref={wrapRef} className="relative">
           <label className="text-sm font-semibold" htmlFor="search">
             Search
@@ -83,54 +78,60 @@ export default function ProductGridClient({
             id="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              if (q && suggestions.length) setOpen(true);
-            }}
+            onFocus={() => setOpen(true)}
             placeholder="Search products..."
             className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
             autoComplete="off"
           />
 
-          {/* Suggestions container (brief requirement) */}
-          {open && (
-            <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
-              <ul className="max-h-80 overflow-auto">
-                {suggestions.map((p) => (
-                  <li
-                    key={p.id}
-                    className="border-b border-black/5 last:border-b-0"
-                  >
-                    <Link
-                      href={`/products/${p.id}`}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-black/[0.03]"
-                      onClick={() => setOpen(false)}
+          {open && q && (
+            <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+              {suggestions.length > 0 ? (
+                <ul className="max-h-72 overflow-auto">
+                  {suggestions.map((p) => (
+                    <li
+                      key={p.id}
+                      className="border-b border-black/5 last:border-b-0"
                     >
-                      <img
-                        src={p.image?.url}
-                        alt={p.image?.alt || p.title}
-                        className="h-10 w-10 rounded-xl object-cover"
-                      />
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold">
-                          {p.title}
+                      <Link
+                        href={`/products/${p.id}`}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-black/[0.03]"
+                        onClick={() => {
+                          setOpen(false);
+                          setQuery("");
+                        }}
+                      >
+                        <img
+                          src={p.image?.url}
+                          alt={p.image?.alt || p.title}
+                          className="h-10 w-10 rounded-xl object-cover"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-semibold">
+                            {p.title}
+                          </div>
+                          <div className="text-xs text-black/60">
+                            ${priceOf(p)}
+                          </div>
                         </div>
-                        <div className="text-xs text-black/60">
-                          ${priceOf(p)}
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                        <span className="text-xs text-black/40">View</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="px-4 py-3 text-sm text-black/60">
+                  No results for “{query.trim()}”.
+                </div>
+              )}
 
-              <div className="px-4 py-2 text-xs text-black/50">
-                {filtered.length} match{filtered.length === 1 ? "" : "es"}
+              <div className="px-4 py-2 text-xs text-black/50 border-t border-black/5">
+                {matches.length} match{matches.length === 1 ? "" : "es"}
               </div>
             </div>
           )}
         </div>
 
-        {/* Sorting */}
         <div>
           <label className="text-sm font-semibold" htmlFor="sort">
             Sort
@@ -152,9 +153,8 @@ export default function ProductGridClient({
         </div>
       </div>
 
-      {/* Grid */}
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {sorted.map((product) => {
+        {gridProducts.map((product) => {
           const hasDiscount = product.discountedPrice < product.price;
           const discountPercent = hasDiscount
             ? Math.round(
@@ -175,7 +175,6 @@ export default function ProductGridClient({
                   alt={product.image?.alt || product.title}
                   className="h-56 w-full object-cover group-hover:scale-[1.02] transition"
                 />
-
                 {hasDiscount && (
                   <div className="absolute left-3 top-3 rounded-lg bg-black px-2 py-1 text-xs font-semibold text-white">
                     −{discountPercent}%
