@@ -65,15 +65,17 @@ export default function ContactPage() {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Contact</h1>
-      <p className="mt-2 text-black/60">
+      <h1 className="text-3xl font-semibold tracking-tight text-[#2f261f]">
+        Contact
+      </h1>
+      <p className="mt-2 text-[#6f6258]">
         Send us a message and we’ll get back to you.
       </p>
 
       {submitted && (
-        <div className="mt-6 rounded-2xl border border-black/10 bg-white p-4">
-          <p className="text-sm font-medium">Message sent</p>
-          <p className="mt-1 text-sm text-black/60">
+        <div className="mt-6 rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-4 shadow-sm">
+          <p className="text-sm font-medium text-[#2f261f]">Message sent</p>
+          <p className="mt-1 text-sm text-[#6f6258]">
             Thanks for reaching out. We’ll reply as soon as possible.
           </p>
         </div>
@@ -81,14 +83,17 @@ export default function ContactPage() {
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5">
         <div>
-          <label className="text-sm font-semibold" htmlFor="fullName">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="fullName"
+          >
             Full Name
           </label>
           <input
             id="fullName"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             placeholder="Your full name"
           />
           {errors.fullName && (
@@ -97,14 +102,17 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="text-sm font-semibold" htmlFor="subject">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="subject"
+          >
             Subject
           </label>
           <input
             id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             placeholder="What is this about?"
           />
           {errors.subject && (
@@ -113,14 +121,17 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="text-sm font-semibold" htmlFor="email">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="email"
+          >
             Email
           </label>
           <input
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             placeholder="name@example.com"
             inputMode="email"
           />
@@ -130,14 +141,17 @@ export default function ContactPage() {
         </div>
 
         <div>
-          <label className="text-sm font-semibold" htmlFor="message">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="message"
+          >
             Message
           </label>
           <textarea
             id="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="mt-2 min-h-[140px] w-full resize-y rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 min-h-[140px] w-full resize-y rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             placeholder="Write your message..."
           />
           {errors.message && (
@@ -147,7 +161,7 @@ export default function ContactPage() {
 
         <button
           type="submit"
-          className="w-full rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-black/90 transition"
+          className="w-full rounded-2xl bg-[#7c5c46] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#694c39]"
         >
           Send message
         </button>

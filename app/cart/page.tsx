@@ -13,17 +13,19 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen">
-      <h1 className="text-3xl font-semibold tracking-tight">Cart</h1>
-      <p className="mt-2 text-sm text-black/60">
+      <h1 className="text-3xl font-semibold tracking-tight text-[#2f261f]">
+        Cart
+      </h1>
+      <p className="mt-2 text-sm text-[#6f6258]">
         Review your items and adjust quantities before checkout.
       </p>
 
       {items.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-black/10 bg-white p-6">
-          <p className="text-sm text-black/70">Your cart is empty.</p>
+        <div className="mt-10 rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-6 shadow-sm">
+          <p className="text-sm text-[#6f6258]">Your cart is empty.</p>
           <Link
             href="/"
-            className="mt-4 inline-block text-sm font-semibold underline underline-offset-4"
+            className="mt-4 inline-block text-sm font-semibold text-[#7c5c46] underline underline-offset-4"
           >
             Continue shopping
           </Link>
@@ -34,7 +36,7 @@ export default function CartPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-4 rounded-2xl border border-black/10 bg-white p-4"
+                className="flex gap-4 rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-4 shadow-sm"
               >
                 <img
                   src={item.imageUrl}
@@ -45,14 +47,16 @@ export default function CartPage() {
                 <div className="flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-sm font-semibold">{item.title}</div>
-                      <div className="mt-1 text-sm text-black/60">
+                      <div className="text-sm font-semibold text-[#2f261f]">
+                        {item.title}
+                      </div>
+                      <div className="mt-1 text-sm text-[#6f6258]">
                         ${item.unitPrice}
                       </div>
                     </div>
 
                     <button
-                      className="text-xs text-black/60 hover:text-black underline underline-offset-4"
+                      className="text-xs text-[#6f6258] underline underline-offset-4 transition hover:text-[#7c5c46]"
                       type="button"
                       onClick={() => removeItem(item.id)}
                     >
@@ -61,10 +65,10 @@ export default function CartPage() {
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
-                    <div className="inline-flex items-center rounded-xl border border-black/10">
+                    <div className="inline-flex items-center rounded-xl border border-[#ddd1c3] bg-[#f8f3ec]">
                       <button
                         type="button"
-                        className="px-3 py-2 text-sm hover:bg-black/[0.03]"
+                        className="px-3 py-2 text-sm transition hover:bg-[#efe5d8]"
                         onClick={() => decrement(item.id)}
                         aria-label="Decrease quantity"
                       >
@@ -72,7 +76,7 @@ export default function CartPage() {
                       </button>
 
                       <input
-                        className="w-14 bg-transparent text-center text-sm outline-none"
+                        className="w-14 bg-transparent text-center text-sm text-[#2f261f] outline-none"
                         value={item.quantity}
                         onChange={(e) =>
                           setQuantity(item.id, Number(e.target.value))
@@ -82,7 +86,7 @@ export default function CartPage() {
 
                       <button
                         type="button"
-                        className="px-3 py-2 text-sm hover:bg-black/[0.03]"
+                        className="px-3 py-2 text-sm transition hover:bg-[#efe5d8]"
                         onClick={() => increment(item.id)}
                         aria-label="Increase quantity"
                       >
@@ -90,7 +94,7 @@ export default function CartPage() {
                       </button>
                     </div>
 
-                    <div className="text-sm font-semibold">
+                    <div className="text-sm font-semibold text-[#2f261f]">
                       ${(item.unitPrice * item.quantity).toFixed(2)}
                     </div>
                   </div>
@@ -99,22 +103,26 @@ export default function CartPage() {
             ))}
           </div>
 
-          <aside className="h-fit rounded-2xl border border-black/10 bg-white p-6">
-            <h2 className="text-sm font-semibold">Order summary</h2>
+          <aside className="h-fit rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-6 shadow-sm">
+            <h2 className="text-sm font-semibold text-[#2f261f]">
+              Order summary
+            </h2>
 
             <div className="mt-4 flex items-center justify-between text-sm">
-              <span className="text-black/60">Total</span>
-              <span className="font-semibold">${total.toFixed(2)}</span>
+              <span className="text-[#6f6258]">Total</span>
+              <span className="font-semibold text-[#2f261f]">
+                ${total.toFixed(2)}
+              </span>
             </div>
 
             <Link
               href="/checkout/success"
-              className="mt-6 block w-full rounded-xl bg-black px-4 py-3 text-center text-sm font-semibold text-white hover:opacity-90"
+              className="mt-6 block w-full rounded-xl bg-[#7c5c46] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#694c39]"
             >
               Checkout
             </Link>
 
-            <p className="mt-3 text-xs text-black/50">
+            <p className="mt-3 text-xs text-[#8d7f73]">
               No real payment, just a fun school project
             </p>
           </aside>

@@ -49,7 +49,7 @@ export default function ProductGridClient({
       case "ratingHigh":
         return list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
       default:
-        return list; // relevance
+        return list;
     }
   }, [products, sort]);
 
@@ -70,7 +70,10 @@ export default function ProductGridClient({
     <div>
       <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-end">
         <div ref={wrapRef} className="relative">
-          <label className="text-sm font-semibold" htmlFor="search">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="search"
+          >
             Search
           </label>
 
@@ -80,22 +83,22 @@ export default function ProductGridClient({
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setOpen(true)}
             placeholder="Search products..."
-            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             autoComplete="off"
           />
 
           {open && q && (
-            <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
+            <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] shadow-sm">
               {suggestions.length > 0 ? (
                 <ul className="max-h-72 overflow-auto">
                   {suggestions.map((p) => (
                     <li
                       key={p.id}
-                      className="border-b border-black/5 last:border-b-0"
+                      className="border-b border-[#efe6db] last:border-b-0"
                     >
                       <Link
                         href={`/products/${p.id}`}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-black/[0.03]"
+                        className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#f3ece3]"
                         onClick={() => {
                           setOpen(false);
                           setQuery("");
@@ -107,25 +110,25 @@ export default function ProductGridClient({
                           className="h-10 w-10 rounded-xl object-cover"
                         />
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-semibold">
+                          <div className="truncate text-sm font-semibold text-[#2f261f]">
                             {p.title}
                           </div>
-                          <div className="text-xs text-black/60">
+                          <div className="text-xs text-[#6f6258]">
                             ${priceOf(p)}
                           </div>
                         </div>
-                        <span className="text-xs text-black/40">View</span>
+                        <span className="text-xs text-[#8d7f73]">View</span>
                       </Link>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <div className="px-4 py-3 text-sm text-black/60">
+                <div className="px-4 py-3 text-sm text-[#6f6258]">
                   No results for “{query.trim()}”.
                 </div>
               )}
 
-              <div className="px-4 py-2 text-xs text-black/50 border-t border-black/5">
+              <div className="border-t border-[#efe6db] px-4 py-2 text-xs text-[#8d7f73]">
                 {matches.length} match{matches.length === 1 ? "" : "es"}
               </div>
             </div>
@@ -133,13 +136,16 @@ export default function ProductGridClient({
         </div>
 
         <div>
-          <label className="text-sm font-semibold" htmlFor="sort">
+          <label
+            className="text-sm font-semibold text-[#2f261f]"
+            htmlFor="sort"
+          >
             Sort
           </label>
 
           <select
             id="sort"
-            className="mt-2 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:border-black/30"
+            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             value={sort}
             onChange={(e) => setSort(e.target.value as SortValue)}
           >
@@ -167,40 +173,44 @@ export default function ProductGridClient({
             <Link
               key={product.id}
               href={`/products/${product.id}`}
-              className="group rounded-2xl border border-black/10 bg-white p-4 hover:border-black/20 transition"
+              className="group rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-4 shadow-sm transition hover:border-[#c9baa9] hover:shadow-md"
             >
               <div className="relative overflow-hidden rounded-xl">
                 <img
                   src={product.image?.url}
                   alt={product.image?.alt || product.title}
-                  className="h-56 w-full object-cover group-hover:scale-[1.02] transition"
+                  className="h-56 w-full object-cover transition group-hover:scale-[1.02]"
                 />
                 {hasDiscount && (
-                  <div className="absolute left-3 top-3 rounded-lg bg-black px-2 py-1 text-xs font-semibold text-white">
+                  <div className="absolute left-3 top-3 rounded-lg bg-[#7c5c46] px-2 py-1 text-xs font-semibold text-white">
                     −{discountPercent}%
                   </div>
                 )}
               </div>
 
               <div className="mt-4">
-                <div className="text-sm font-semibold">{product.title}</div>
+                <div className="text-sm font-semibold text-[#2f261f]">
+                  {product.title}
+                </div>
 
                 <div className="mt-2 flex items-center gap-2 text-sm">
                   {hasDiscount ? (
                     <>
-                      <span className="font-semibold">
+                      <span className="font-semibold text-[#2f261f]">
                         ${product.discountedPrice}
                       </span>
-                      <span className="text-black/40 line-through">
+                      <span className="text-[#8d7f73] line-through">
                         ${product.price}
                       </span>
                     </>
                   ) : (
-                    <span className="font-semibold">${product.price}</span>
+                    <span className="font-semibold text-[#2f261f]">
+                      ${product.price}
+                    </span>
                   )}
                 </div>
 
-                <div className="mt-2 text-xs text-black/60">
+                <div className="mt-2 text-xs text-[#6f6258]">
                   Rating: {product.rating}/5
                 </div>
               </div>
