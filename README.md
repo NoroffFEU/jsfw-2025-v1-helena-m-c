@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Little Shop
 
-## Getting Started
+Little Shop is a small e-commerce application built with Next.js, TypeScript and the Noroff Online Shop REST API.  
+The application allows users to browse products, search and sort products, view product details, add items to a cart and simulate a checkout process.
 
-First, run the development server:
+Live site: https://helena-cruse-jsfw2026.netlify.app
+Repository: https://github.com/NoroffFEU/jsfw-2025-v1-helena-m-c.git
 
-```bash
+## Features
+
+- Product listing from the Noroff Online Shop API
+- Individual product pages
+- Search functionality
+- Product sorting (alphabetical, price, rating)
+- Shopping cart functionality
+- Checkout success page
+- Contact form with validation
+- Responsive layout with mobile navigation
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- REST API (Noroff Online Shop API)
+
+## Installation
+
+Clone the repository:
+
+https://github.com/NoroffFEU/jsfw-2025-v1-helena-m-c.git
+
+Install dependencies:
+
+npm install
+
+Start the development server:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses the **Noroff Online Shop REST API** to fetch product data.
 
-## Learn More
+Products and product details are retrieved from the API and displayed in the application.
 
-To learn more about Next.js, take a look at the following resources:
+## What I Learned
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Through this project I gained more experience working with Next.js and structuring a React application using the App Router. I also improved my understanding of TypeScript, data fetching from APIs, and organizing components in a larger project.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Helena Cruse
