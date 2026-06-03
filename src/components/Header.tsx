@@ -9,96 +9,68 @@ export default function Header() {
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#d8ccbf] bg-[#f7f1e8]/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <header className="sticky top-0 z-50 border-b border-[#E4D7CC] bg-[#FFF8F2]/90 text-[#2F2926] backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="text-base font-semibold tracking-tight text-[#3b3128]"
+          className="flex items-center gap-3"
           onClick={() => setMenuOpen(false)}
         >
-          Little Shop
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-[#C96D4A] font-serif-display font-bold text-white">
+            LS
+          </span>
+
+          <span>
+            <span className="block font-serif-display text-xl leading-none">
+              Little Shop
+            </span>
+            <span className="mt-1 block text-[10px] uppercase tracking-[0.22em] text-[#6F7B6A]">
+              Curated lifestyle store
+            </span>
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 text-sm md:flex text-[#7a6d62]">
-          <Link href="/" className="transition hover:text-[#7c5c46]">
+        <nav className="hidden items-center gap-7 text-sm font-semibold text-[#7A716B] md:flex">
+          <Link href="/" className="transition hover:text-[#C96D4A]">
             Shop
           </Link>
-          <Link href="/contact" className="transition hover:text-[#7c5c46]">
+          <Link href="/contact" className="transition hover:text-[#C96D4A]">
             Contact
           </Link>
-          <Link href="/cart" className="transition hover:text-[#7c5c46]">
-            Cart
-            {mounted && count > 0 && (
-              <span className="ml-2 inline-flex min-w-6 items-center justify-center rounded-full bg-[#7c5c46] px-2 py-0.5 text-xs font-semibold text-white">
-                {count}
-              </span>
-            )}
+          <Link
+            href="/cart"
+            className="rounded-full bg-[#C96D4A] px-5 py-2.5 font-bold text-white shadow-sm transition hover:bg-[#A75538]"
+          >
+            Cart {mounted && count > 0 ? `(${count})` : ""}
           </Link>
         </nav>
 
         <button
           type="button"
+          className="rounded-full border border-[#E4D7CC] px-4 py-2 text-sm font-bold md:hidden"
+          onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="inline-flex items-center justify-center rounded-xl border border-[#d8ccbf] bg-[#fffaf4] p-2 text-[#3b3128] transition hover:bg-[#efe5d8] md:hidden"
         >
-          <span className="flex h-5 w-5 flex-col items-center justify-center gap-1">
-            <span
-              className={`block h-0.5 w-4 bg-current transition ${
-                menuOpen ? "translate-y-1.5 rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-4 bg-current transition ${
-                menuOpen ? "opacity-0" : ""
-              }`}
-            />
-            <span
-              className={`block h-0.5 w-4 bg-current transition ${
-                menuOpen ? "-translate-y-1.5 -rotate-45" : ""
-              }`}
-            />
-          </span>
+          {menuOpen ? "Close" : "Menu"}
         </button>
       </div>
 
       {menuOpen && (
-        <div className="border-t border-[#d8ccbf] bg-[#fffaf4] md:hidden">
-          <nav className="mx-auto flex max-w-6xl flex-col px-6 py-4 text-sm text-[#7a6d62]">
-            <Link
-              href="/"
-              className="rounded-xl px-3 py-3 transition hover:bg-[#efe5d8] hover:text-[#7c5c46]"
-              onClick={() => setMenuOpen(false)}
-            >
-              Shop
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-xl px-3 py-3 transition hover:bg-[#efe5d8] hover:text-[#7c5c46]"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            <Link
-              href="/cart"
-              className="flex items-center rounded-xl px-3 py-3 transition hover:bg-[#efe5d8] hover:text-[#7c5c46]"
-              onClick={() => setMenuOpen(false)}
-            >
-              Cart
-              {mounted && count > 0 && (
-                <span className="ml-2 inline-flex min-w-6 items-center justify-center rounded-full bg-[#7c5c46] px-2 py-0.5 text-xs font-semibold text-white">
-                  {count}
-                </span>
-              )}
-            </Link>
-          </nav>
-        </div>
+        <nav className="grid gap-2 border-t border-[#E4D7CC] bg-[#FFF8F2] px-6 py-4 text-sm font-semibold md:hidden">
+          <Link href="/" onClick={() => setMenuOpen(false)}>
+            Shop
+          </Link>
+          <Link href="/contact" onClick={() => setMenuOpen(false)}>
+            Contact
+          </Link>
+          <Link href="/cart" onClick={() => setMenuOpen(false)}>
+            Cart {mounted && count > 0 ? `(${count})` : ""}
+          </Link>
+        </nav>
       )}
     </header>
   );

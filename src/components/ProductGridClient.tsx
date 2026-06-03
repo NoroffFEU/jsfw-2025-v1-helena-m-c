@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product } from "@/types/product";
+import AddToCartButton from "@/components/AddToCartButton";
 
 type SortValue =
   | "relevance"
@@ -19,23 +20,18 @@ export default function ProductGridClient({
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortValue>("relevance");
-  const [open, setOpen] = useState(false);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
 
   const q = query.trim().toLowerCase();
 
-  const priceOf = (p: Product) =>
-    p.discountedPrice < p.price ? p.discountedPrice : p.price;
+  const priceOf = (product: Product) =>
+    product.discountedPrice < product.price
+      ? product.discountedPrice
+      : product.price;
 
-  const matches = useMemo(() => {
-    if (!q) return [];
-    return products.filter((p) => p.title.toLowerCase().includes(q));
-  }, [products, q]);
-
-  const suggestions = useMemo(() => matches.slice(0, 8), [matches]);
-
-  const gridProducts = useMemo(() => {
-    const list = products.slice();
+  const filteredProducts = useMemo(() => {
+    const list = q
+      ? products.filter((product) => product.title.toLowerCase().includes(q))
+      : products.slice();
 
     switch (sort) {
       case "az":
@@ -51,173 +47,131 @@ export default function ProductGridClient({
       default:
         return list;
     }
-  }, [products, sort]);
-
-  useEffect(() => {
-    setOpen(Boolean(q));
-  }, [q]);
-
-  useEffect(() => {
-    const onDown = (e: MouseEvent) => {
-      if (!wrapRef.current) return;
-      if (!wrapRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, []);
+  }, [products, q, sort]);
 
   return (
     <div>
-      <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-end">
-        <div ref={wrapRef} className="relative">
+      <div className="grid gap-4 rounded-[1.5rem] border border-[#E4D7CC] bg-[#FFFDF8] p-4 shadow-sm md:grid-cols-[1fr_240px]">
+        <div>
           <label
-            className="text-sm font-semibold text-[#2f261f]"
             htmlFor="search"
+            className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[#C96D4A]"
           >
             Search
           </label>
-
           <input
             id="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setOpen(true)}
+            onChange={(event) => setQuery(event.target.value)}
             placeholder="Search products..."
-            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
-            autoComplete="off"
+            className="w-full rounded-full border border-[#E4D7CC] bg-white px-5 py-3 text-sm text-[#2F2926] outline-none focus:ring-4 focus:ring-[#C96D4A]/20"
           />
-
-          {open && q && (
-            <div className="absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] shadow-sm">
-              {suggestions.length > 0 ? (
-                <ul className="max-h-72 overflow-auto">
-                  {suggestions.map((p) => (
-                    <li
-                      key={p.id}
-                      className="border-b border-[#efe6db] last:border-b-0"
-                    >
-                      <Link
-                        href={`/products/${p.id}`}
-                        className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#f3ece3]"
-                        onClick={() => {
-                          setOpen(false);
-                          setQuery("");
-                        }}
-                      >
-                        <img
-                          src={p.image?.url}
-                          alt={p.image?.alt || p.title}
-                          className="h-10 w-10 rounded-xl object-cover"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-semibold text-[#2f261f]">
-                            {p.title}
-                          </div>
-                          <div className="text-xs text-[#6f6258]">
-                            ${priceOf(p)}
-                          </div>
-                        </div>
-                        <span className="text-xs text-[#8d7f73]">View</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="px-4 py-3 text-sm text-[#6f6258]">
-                  No results for “{query.trim()}”.
-                </div>
-              )}
-
-              <div className="border-t border-[#efe6db] px-4 py-2 text-xs text-[#8d7f73]">
-                {matches.length} match{matches.length === 1 ? "" : "es"}
-              </div>
-            </div>
-          )}
         </div>
 
         <div>
           <label
-            className="text-sm font-semibold text-[#2f261f]"
             htmlFor="sort"
+            className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[#C96D4A]"
           >
             Sort
           </label>
-
           <select
             id="sort"
-            className="mt-2 w-full rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] px-4 py-3 text-sm text-[#2f261f] outline-none focus:border-[#7c5c46]"
             value={sort}
-            onChange={(e) => setSort(e.target.value as SortValue)}
+            onChange={(event) => setSort(event.target.value as SortValue)}
+            className="w-full rounded-full border border-[#E4D7CC] bg-white px-5 py-3 text-sm text-[#2F2926] outline-none focus:ring-4 focus:ring-[#C96D4A]/20"
           >
             <option value="relevance">Relevance</option>
-            <option value="az">Alphabetical: A–Z</option>
-            <option value="za">Alphabetical: Z–A</option>
-            <option value="priceLow">Price: Low–High</option>
-            <option value="priceHigh">Price: High–Low</option>
-            <option value="ratingHigh">Rating: High–Low</option>
+            <option value="az">Alphabetical: A-Z</option>
+            <option value="za">Alphabetical: Z-A</option>
+            <option value="priceLow">Price: Low-High</option>
+            <option value="priceHigh">Price: High-Low</option>
+            <option value="ratingHigh">Rating: High-Low</option>
           </select>
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {gridProducts.map((product) => {
-          const hasDiscount = product.discountedPrice < product.price;
-          const discountPercent = hasDiscount
-            ? Math.round(
-                ((product.price - product.discountedPrice) / product.price) *
-                  100
-              )
-            : 0;
+      {filteredProducts.length === 0 ? (
+        <div className="mt-8 rounded-[1.5rem] bg-[#FFFDF8] p-10 text-center shadow-sm">
+          <h3 className="font-serif-display text-3xl text-[#2F2926]">
+            No products found.
+          </h3>
+          <p className="mt-3 text-sm text-[#756B63]">
+            Try searching for another product.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredProducts.map((product) => {
+            const hasDiscount = product.discountedPrice < product.price;
+            const discountPercent = hasDiscount
+              ? Math.round(
+                  ((product.price - product.discountedPrice) / product.price) *
+                    100
+                )
+              : 0;
 
-          return (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="group rounded-2xl border border-[#ddd1c3] bg-[#fffdf9] p-4 shadow-sm transition hover:border-[#c9baa9] hover:shadow-md"
-            >
-              <div className="relative overflow-hidden rounded-xl">
-                <img
-                  src={product.image?.url}
-                  alt={product.image?.alt || product.title}
-                  className="h-56 w-full object-cover transition group-hover:scale-[1.02]"
-                />
-                {hasDiscount && (
-                  <div className="absolute left-3 top-3 rounded-lg bg-[#7c5c46] px-2 py-1 text-xs font-semibold text-white">
-                    −{discountPercent}%
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <div className="text-sm font-semibold text-[#2f261f]">
-                  {product.title}
-                </div>
-
-                <div className="mt-2 flex items-center gap-2 text-sm">
-                  {hasDiscount ? (
-                    <>
-                      <span className="font-semibold text-[#2f261f]">
-                        ${product.discountedPrice}
+            return (
+              <article
+                key={product.id}
+                className="overflow-hidden rounded-[1.5rem] border border-[#E4D7CC] bg-[#FFFDF8] shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              >
+                <Link href={`/products/${product.id}`} className="block">
+                  <div className="relative h-64 overflow-hidden bg-[#F5EEE8]">
+                    <img
+                      src={product.image?.url}
+                      alt={product.image?.alt || product.title}
+                      className="h-full w-full object-cover transition duration-300 hover:scale-[1.03]"
+                    />
+                    {hasDiscount && (
+                      <span className="absolute left-4 top-4 rounded-full bg-[#6F7B6A] px-3 py-1 text-xs font-bold text-white">
+                        -{discountPercent}%
                       </span>
-                      <span className="text-[#8d7f73] line-through">
+                    )}
+                  </div>
+                </Link>
+
+                <div className="p-5">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#C96D4A]">
+                      Little pick
+                    </span>
+                    <span className="text-xs font-bold text-[#6F7B6A]">
+                      {product.rating}/5
+                    </span>
+                  </div>
+
+                  <Link href={`/products/${product.id}`}>
+                    <h3 className="text-lg font-black text-[#2F2926] hover:text-[#C96D4A]">
+                      {product.title}
+                    </h3>
+                  </Link>
+
+                  <p className="mt-2 line-clamp-2 min-h-11 text-sm leading-6 text-[#756B63]">
+                    {product.description ||
+                      "Selected for the Little Shop catalogue."}
+                  </p>
+
+                  <div className="mt-4 flex items-baseline gap-2">
+                    <span className="text-xl font-black text-[#2F2926]">
+                      ${product.discountedPrice}
+                    </span>
+                    {hasDiscount && (
+                      <span className="text-sm text-[#756B63] line-through">
                         ${product.price}
                       </span>
-                    </>
-                  ) : (
-                    <span className="font-semibold text-[#2f261f]">
-                      ${product.price}
-                    </span>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                <div className="mt-2 text-xs text-[#6f6258]">
-                  Rating: {product.rating}/5
+                  <div className="mt-5 [&_button]:w-full [&_button]:rounded-full [&_button]:bg-[#C96D4A] [&_button]:px-5 [&_button]:py-3 [&_button]:font-bold [&_button]:text-white [&_button]:transition [&_button:hover]:bg-[#A75538]">
+                    <AddToCartButton product={product} />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
