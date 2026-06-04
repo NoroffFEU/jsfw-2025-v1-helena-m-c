@@ -59,6 +59,7 @@ export default function ProductGridClient({
           >
             Search
           </label>
+
           <input
             id="search"
             value={query}
@@ -75,6 +76,7 @@ export default function ProductGridClient({
           >
             Sort
           </label>
+
           <select
             id="sort"
             value={sort}
@@ -103,6 +105,8 @@ export default function ProductGridClient({
       ) : (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => {
+            const productHref = `/products/${product.id}`;
+            const displayPrice = priceOf(product);
             const hasDiscount = product.discountedPrice < product.price;
             const discountPercent = hasDiscount
               ? Math.round(
@@ -116,13 +120,18 @@ export default function ProductGridClient({
                 key={product.id}
                 className="overflow-hidden rounded-[1.5rem] border border-[#E4D7CC] bg-[#FFFDF8] shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
-                <Link href={`/products/${product.id}`} className="block">
+                <Link
+                  href={productHref}
+                  className="block"
+                  aria-label={`View ${product.title}`}
+                >
                   <div className="relative h-64 overflow-hidden bg-[#F5EEE8]">
                     <img
                       src={product.image?.url}
                       alt={product.image?.alt || product.title}
                       className="h-full w-full object-cover transition duration-300 hover:scale-[1.03]"
                     />
+
                     {hasDiscount && (
                       <span className="absolute left-4 top-4 rounded-full bg-[#6F7B6A] px-3 py-1 text-xs font-bold text-white">
                         -{discountPercent}%
@@ -141,8 +150,8 @@ export default function ProductGridClient({
                     </span>
                   </div>
 
-                  <Link href={`/products/${product.id}`}>
-                    <h3 className="text-lg font-black text-[#2F2926] hover:text-[#C96D4A]">
+                  <Link href={productHref} className="block">
+                    <h3 className="text-lg font-black text-[#2F2926] transition hover:text-[#C96D4A]">
                       {product.title}
                     </h3>
                   </Link>
@@ -154,8 +163,9 @@ export default function ProductGridClient({
 
                   <div className="mt-4 flex items-baseline gap-2">
                     <span className="text-xl font-black text-[#2F2926]">
-                      ${product.discountedPrice}
+                      ${displayPrice}
                     </span>
+
                     {hasDiscount && (
                       <span className="text-sm text-[#756B63] line-through">
                         ${product.price}
@@ -163,8 +173,17 @@ export default function ProductGridClient({
                     )}
                   </div>
 
-                  <div className="mt-5 [&_button]:w-full [&_button]:rounded-full [&_button]:bg-[#C96D4A] [&_button]:px-5 [&_button]:py-3 [&_button]:font-bold [&_button]:text-white [&_button]:transition [&_button:hover]:bg-[#A75538]">
-                    <AddToCartButton product={product} />
+                  <div className="mt-5 grid gap-3">
+                    <Link
+                      href={productHref}
+                      className="inline-flex w-full items-center justify-center rounded-full border border-[#E4D7CC] bg-white px-5 py-3 text-sm font-bold text-[#2F2926] transition hover:border-[#C96D4A] hover:text-[#C96D4A]"
+                    >
+                      View product
+                    </Link>
+
+                    <div className="[&_button]:w-full [&_button]:rounded-full [&_button]:bg-[#C96D4A] [&_button]:px-5 [&_button]:py-3 [&_button]:font-bold [&_button]:text-white [&_button]:transition [&_button:hover]:bg-[#A75538]">
+                      <AddToCartButton product={product} />
+                    </div>
                   </div>
                 </div>
               </article>
